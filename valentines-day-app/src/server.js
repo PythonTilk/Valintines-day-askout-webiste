@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 const port = 3000;
+const ip = '159.89.4.228';
 
 app.use(express.static(path.join(__dirname, 'src')));
 app.use(express.urlencoded({ extended: true }));
@@ -78,6 +79,6 @@ app.get('/no.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'no.html'));
 });
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+app.listen(port, ip, () => {
+    console.log(`Server running at http://${ip}:${port}`);
 });
