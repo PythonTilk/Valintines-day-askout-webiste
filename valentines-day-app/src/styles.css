@@ -12,6 +12,7 @@ body {
 .container {
     text-align: center;
     flex: 1;
+    position: relative;
 }
 
 footer {
@@ -50,6 +51,8 @@ button {
 button.yes {
     background-color: #ff6f61;
     color: white;
+    position: absolute;
+    bottom: 20px;
 }
 
 button.no {

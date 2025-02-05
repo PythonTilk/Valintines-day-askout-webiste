@@ -23,6 +23,8 @@ valentines-day-app
 - **Dynamic Behavior**: 
   - Clicking "Yes" enlarges the button.
   - Clicking "No" moves the button to a random location on the screen.
+- **Custom Link Generation**: Generate a custom link for asking someone out.
+- **Copy Link to Clipboard**: Copy the generated link to the clipboard with a notification popup.
 
 ## Getting Started
 
@@ -47,6 +49,16 @@ valentines-day-app
 4. **Open Your Browser**:
     Navigate to `http://localhost:3000`.
 
+### Test Project (Local)
+
+1. **Clone the Repository**:
+    ```sh
+    git clone https://github.com/yourusername/Valintines-day-askout-webiste.git
+    cd Valintines-day-askout-webiste/valentines-day-app/src
+    ```
+
+2. **Open the Application**:
+    Open `index.html` in your web browser to view the application.
 
 ## Technologies Used
 
