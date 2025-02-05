@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Valentine's Day Ask Out</title>
+    <link rel="stylesheet" href="../src/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Will you be my Valentine?</h1>
+        <form id="createLinkForm">
+            <label for="name">Enter your name:</label>
+            <input type="text" id="name" name="name" required>
+            <button type="submit">Create Link</button>
+        </form>
+        <div id="linkContainer"></div>
+    </div>
+    <script>
+        document.getElementById('createLinkForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const link = `askout.html?name=${encodeURIComponent(name)}`;
+            document.getElementById('linkContainer').innerHTML = `<a href="${link}" target="_blank">Your custom link</a>`;
+        });
+    </script>
+</body>
+</html>

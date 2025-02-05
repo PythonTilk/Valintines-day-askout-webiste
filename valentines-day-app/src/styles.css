@@ -1,0 +1,55 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f8e1e1;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    text-align: center;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+button.yes {
+    background-color: #ff6f61;
+    color: white;
+}
+
+button.no {
+    background-color: #61b3ff;
+    color: white;
+}
+
+button.no:hover {
+    background-color: #4a9edb;
+}
+
+button.yes:active {
+    transform: scale(1.2);
+}
