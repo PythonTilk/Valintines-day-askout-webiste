@@ -4,7 +4,7 @@
   "description": "A web application to generate custom links for asking someone out on Valentine's Day.",
   "main": "app.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node server.js"
   },
   "author": "Noel Burkhardt",
   "license": "MIT",
