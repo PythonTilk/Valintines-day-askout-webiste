@@ -51,6 +51,7 @@
 
                 const currentScale = parseFloat(window.getComputedStyle(yesButton).transform.split(',')[0].slice(7)) || 1;
                 yesButton.style.transform = `scale(${currentScale + 0.1})`;
+                document.getElementById('valentineMessage').style.marginTop = `${-currentScale * 20}px`;
             });
         });
     </script>
