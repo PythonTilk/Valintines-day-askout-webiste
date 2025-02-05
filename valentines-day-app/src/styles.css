@@ -39,6 +39,13 @@ input[type="text"] {
     border-radius: 5px;
 }
 
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
 button {
     padding: 15px 30px;
     font-size: 20px;
@@ -51,8 +58,6 @@ button {
 button.yes {
     background-color: #ff6f61;
     color: white;
-    position: absolute;
-    bottom: 20px;
 }
 
 button.no {

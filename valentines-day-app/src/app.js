@@ -122,16 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         noButton.style.top = `${randomY}px`;
 
         const currentScale = parseFloat(window.getComputedStyle(yesButton).transform.split(',')[0].slice(7)) || 1;
-        const newScale = currentScale + 0.1;
-        const maxTextTop = 20; // Maximum top margin for the text
-
-        if (valentineMessage.style.marginTop === `${maxTextTop}px`) {
-            noButton.style.display = 'none';
-        } else {
-            yesButton.style.transform = `scale(${newScale})`;
-            const newMarginTop = Math.min(maxTextTop, -newScale * 20);
-            valentineMessage.style.marginTop = `${newMarginTop}px`;
-        }
+        yesButton.style.transform = `scale(${currentScale + 0.1})`;
 
         noButton.textContent = beggingPhrases[noClickCount % beggingPhrases.length];
     });
