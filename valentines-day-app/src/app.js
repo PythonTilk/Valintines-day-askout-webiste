@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         const name = document.getElementById('name').value;
         const link = `askout_${Date.now()}.html?name=${encodeURIComponent(name)}`;
-        linkContainer.innerHTML = `<a href="${link}" target="_blank">Your custom link</a>`;
+        linkContainer.textContent = link;
     });
 
     yesButton.addEventListener('click', () => {

@@ -33,6 +33,19 @@ app.post('/create-link', (req, res) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Valentine's Day Ask Out</title>
             <link rel="stylesheet" href="../styles.css">
+            <style>
+                .container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100vh;
+                    text-align: center;
+                }
+                #valentineMessage, img {
+                    transition: margin-top 0.3s ease;
+                }
+            </style>
         </head>
         <body>
             <div class="container">
@@ -44,6 +57,12 @@ app.post('/create-link', (req, res) => {
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
                     let noClickCount = 0;
+
+                    const yesButton = document.getElementById('yesButton');
+                    const noButton = document.getElementById('noButton');
+                    const valentineMessage = document.getElementById('valentineMessage');
+                    const gif = document.querySelector('img');
+                    const maxTopMargin = 20; // Maximum top margin for the text and GIF
 
                     document.getElementById('yesButton').addEventListener('click', function() {
                         window.location.href = '../yes.html';
@@ -63,7 +82,7 @@ app.post('/create-link', (req, res) => {
                         } while (
                             (randomX < yesButton.offsetLeft + yesButton.offsetWidth && randomX + this.offsetWidth > yesButton.offsetLeft) ||
                             (randomY < yesButton.offsetTop + yesButton.offsetHeight && randomY + this.offsetHeight > yesButton.offsetTop) ||
-                            (randomY < document.getElementById('valentineMessage').offsetTop + document.getElementById('valentineMessage').offsetHeight)
+                            (randomY < valentineMessage.offsetTop + valentineMessage.offsetHeight)
                         );
 
                         this.style.position = 'absolute';
@@ -71,7 +90,16 @@ app.post('/create-link', (req, res) => {
                         this.style.top = \`\${randomY}px\`;
 
                         const currentScale = parseFloat(window.getComputedStyle(yesButton).transform.split(',')[0].slice(7)) || 1;
-                        yesButton.style.transform = \`scale(\${currentScale + 0.1})\`;
+                        const newScale = currentScale + 0.1;
+
+                        if (parseInt(valentineMessage.style.marginTop) <= maxTopMargin) {
+                            noButton.style.display = 'none';
+                        } else {
+                            yesButton.style.transform = \`scale(\${newScale})\`;
+                            const newMarginTop = Math.min(maxTopMargin, -newScale * 20);
+                            valentineMessage.style.marginTop = \`\${newMarginTop}px\`;
+                            gif.style.marginTop = \`\${newMarginTop}px\`;
+                        }
                     });
                 });
             </script>

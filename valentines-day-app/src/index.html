@@ -15,7 +15,7 @@
             <input type="text" id="name" name="name" required>
             <button type="submit">Create Link</button>
         </form>
-        <div id="linkContainer"></div>
+        <div id="linkContainer" style="display: none;"></div>
         <div class="button-container">
             <button id="customLinkButton" class="copy-link" style="display: none;">Your Custom Link</button>
             <button id="copyLinkButton" class="copy-link" style="display: none;">📋</button>
@@ -34,18 +34,19 @@
                 body: `name=${encodeURIComponent(name)}`,
             })
             .then(response => response.text())
-            .then(linkHtml => {
-                document.getElementById('linkContainer').innerHTML = linkHtml;
+            .then(link => {
+                document.getElementById('linkContainer').textContent = link;
+                document.getElementById('linkContainer').style.display = 'block';
                 document.getElementById('customLinkButton').style.display = 'block';
                 document.getElementById('copyLinkButton').style.display = 'block';
                 document.getElementById('customLinkButton').onclick = function() {
-                    window.location.href = document.querySelector('#linkContainer a').href;
+                    window.location.href = link;
                 };
             });
         });
 
         document.getElementById('copyLinkButton').addEventListener('click', function() {
-            const link = document.querySelector('#linkContainer a').href;
+            const link = document.getElementById('linkContainer').textContent;
             navigator.clipboard.writeText(link).then(() => {
                 const popup = document.getElementById('popup');
                 popup.classList.add('show');
