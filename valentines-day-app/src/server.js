@@ -36,6 +36,7 @@ app.post('/create-link', (req, res) => {
         </head>
         <body>
             <div class="container">
+                <img src="https://media.tenor.com/ns27oDL6PPIAAAAM/cats-cat-with-flower.gif" alt="Cat with flower">
                 <h1 id="valentineMessage">${name}, will you be my Valentine date?</h1>
                 <button id="yesButton" class="yes">Yes</button>
                 <button id="noButton" class="no">No</button>
@@ -74,6 +75,11 @@ app.post('/create-link', (req, res) => {
                     });
                 });
             </script>
+            <footer style="position: absolute; bottom: 0; width: 100%;">
+                <div>Made with <span class="animated-heart">❤️</span> by pythontilk</div>
+                <br>
+                <a href="https://tilk.tech" target="_blank">Look at my other projects here</a>
+            </footer>
         </body>
         </html>
     `;
