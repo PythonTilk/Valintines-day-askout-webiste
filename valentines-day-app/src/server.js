@@ -5,14 +5,25 @@ const app = express();
 const port = 3000;
 const ip = '159.89.4.228';
 
-app.use(express.static(path.join(__dirname, 'src')));
+app.use(express.static(path.join(__dirname)));
 app.use(express.urlencoded({ extended: true }));
+
+// Ensure the links directory exists
+const linksDir = path.join(__dirname, 'links');
+if (!fs.existsSync(linksDir)) {
+    fs.mkdirSync(linksDir);
+}
+
+// Serve the main HTML file for the root URL
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.post('/create-link', (req, res) => {
     const name = req.body.name;
-    const timestamp = Date.now();
+    const timestamp = Date.now(); 
     const filename = `askout_${timestamp}.html`;
-    const link = `${req.protocol}://${req.get('host')}/${filename}?name=${encodeURIComponent(name)}`;
+    const link = `${req.protocol}://${req.get('host')}/links/${filename}?name=${encodeURIComponent(name)}`;
 
     const askoutContent = `
         <!DOCTYPE html>
@@ -21,7 +32,7 @@ app.post('/create-link', (req, res) => {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Valentine's Day Ask Out</title>
-            <link rel="stylesheet" href="styles.css">
+            <link rel="stylesheet" href="../styles.css">
         </head>
         <body>
             <div class="container">
@@ -34,13 +45,13 @@ app.post('/create-link', (req, res) => {
                     let noClickCount = 0;
 
                     document.getElementById('yesButton').addEventListener('click', function() {
-                        window.location.href = 'yes.html';
+                        window.location.href = '../yes.html';
                     });
 
                     document.getElementById('noButton').addEventListener('click', function() {
                         noClickCount++;
                         if (noClickCount >= 100) {
-                            window.location.href = 'no.html';
+                            window.location.href = '../no.html';
                             return;
                         }
 
@@ -67,16 +78,21 @@ app.post('/create-link', (req, res) => {
         </html>
     `;
 
-    fs.writeFileSync(path.join(__dirname, 'src', filename), askoutContent);
+    fs.writeFileSync(path.join(linksDir, filename), askoutContent);
     res.send(`<a href="${link}" target="_blank">Your custom link</a>`);
 });
 
 app.get('/yes.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'yes.html'));
+    res.sendFile(path.join(__dirname, 'yes.html'));
 });
 
 app.get('/no.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'no.html'));
+    res.sendFile(path.join(__dirname, 'no.html'));
+});
+
+app.get('/links/:filename', (req, res) => {
+    const filename = req.params.filename;
+    res.sendFile(path.join(linksDir, filename));
 });
 
 app.listen(port, ip, () => {

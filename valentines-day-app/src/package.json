@@ -4,11 +4,11 @@
   "description": "A web application to generate custom links for asking someone out on Valentine's Day.",
   "main": "app.js",
   "scripts": {
-    "start": "node ../../server.js"
+    "start": "node src/server.js"
   },
   "author": "Noel Burkhardt",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1" 
   }
 }

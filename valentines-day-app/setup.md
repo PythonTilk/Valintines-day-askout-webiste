@@ -7,12 +7,13 @@
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/Valintines-day-askout-webiste.git
+    git clone https://github.com/pythontilk/Valintines-day-askout-webiste.git
     ```
 
 2. Navigate to the project directory:
     ```sh
-    cd Valintines-day-askout-webiste/valentines-day-app
+    cd Valintines-day-askout-webiste/valentines-day-app/src
+    
     ```
 
 3. Install the dependencies:
@@ -20,14 +21,20 @@
     npm install
     ```
 
-4. Start the server:
+4. Update the IP address in `src/server.js` if running on a server:
+    ```javascript
+    // filepath: /c:/Users/Noel/Documents/GitHub/Valintines-day-askout-webiste/valentines-day-app/src/server.js
+    const ip = 'your.server.ip.address';
+    ```
+
+5. Start the server:
     ```sh
     node src/server.js
     ```
 
-5. Open your browser and navigate to:
+6. Open your browser and navigate to:
     ```
-    http://localhost:3000
+    http://your.server.ip.address:3000
     ```
 
-6. To create a custom link, submit the form on the homepage.
+7. To create a custom link, submit the form on the homepage.

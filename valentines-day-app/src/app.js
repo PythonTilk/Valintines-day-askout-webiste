@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "Please, it's a hope!"
     ];
 
-    createLinkForm.addEventListener('submit', (event) => {
+    createLinkForm.addEventListener('submit', (event) => { 
         event.preventDefault();
         const name = document.getElementById('name').value;
         const link = `askout_${Date.now()}.html?name=${encodeURIComponent(name)}`;
