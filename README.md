@@ -32,8 +32,8 @@ valentines-day-app
 
 1. **Clone the Repository**:
     ```sh
-    git clone https://github.com/yourusername/Valintines-day-askout-webiste.git
-    cd Valintines-day-askout-webiste/valentines-day-app
+    git clone https://github.com/pythontilk/Valintines-day-askout-webiste.git
+    cd Valintines-day-askout-webiste/valentines-day-app/src
     ```
 
 2. **Install Dependencies**:
@@ -49,16 +49,6 @@ valentines-day-app
 4. **Open Your Browser**:
     Navigate to `http://localhost:3000`.
 
-### Test Project (Local)
-
-1. **Clone the Repository**:
-    ```sh
-    git clone https://github.com/yourusername/Valintines-day-askout-webiste.git
-    cd Valintines-day-askout-webiste/valentines-day-app/src
-    ```
-
-2. **Open the Application**:
-    Open `index.html` in your web browser to view the application.
 
 ## Technologies Used
 
