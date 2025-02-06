@@ -33,20 +33,22 @@
                 },
                 body: `name=${encodeURIComponent(name)}`,
             })
-            .then(response => response.text())
-            .then(link => {
-                document.getElementById('linkContainer').textContent = link;
+            .then(response => response.json())
+            .then(data => {
+                const link = data.link;
+                document.getElementById('linkContainer').innerHTML = `<a href="${link}" target="_blank">Your custom link</a>`;
                 document.getElementById('linkContainer').style.display = 'block';
                 document.getElementById('customLinkButton').style.display = 'block';
                 document.getElementById('copyLinkButton').style.display = 'block';
                 document.getElementById('customLinkButton').onclick = function() {
                     window.location.href = link;
                 };
-            });
+            })
+            .catch(error => console.error('Error:', error));
         });
 
         document.getElementById('copyLinkButton').addEventListener('click', function() {
-            const link = document.getElementById('linkContainer').textContent;
+            const link = document.querySelector('#linkContainer a').href;
             navigator.clipboard.writeText(link).then(() => {
                 const popup = document.getElementById('popup');
                 popup.classList.add('show');

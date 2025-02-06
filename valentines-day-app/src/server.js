@@ -21,9 +21,9 @@ app.get('/', (req, res) => {
 
 app.post('/create-link', (req, res) => {
     const name = req.body.name;
-    const timestamp = Date.now(); 
+    const timestamp = Date.now();
     const filename = `askout_${timestamp}.html`;
-    const link = `${req.protocol}://${req.get('host')}/links/${filename}?name=${encodeURIComponent(name)}`;
+    const link = `${req.protocol}://${req.get('host')}/links/${filename}`;
 
     const askoutContent = `
         <!DOCTYPE html>
@@ -33,23 +33,9 @@ app.post('/create-link', (req, res) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Valentine's Day Ask Out</title>
             <link rel="stylesheet" href="../styles.css">
-            <style>
-                .container {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    height: 100vh;
-                    text-align: center;
-                }
-                #valentineMessage, img {
-                    transition: margin-top 0.3s ease;
-                }
-            </style>
         </head>
         <body>
             <div class="container">
-                <img src="https://media.tenor.com/ns27oDL6PPIAAAAM/cats-cat-with-flower.gif" alt="Cat with flower">
                 <h1 id="valentineMessage">${name}, will you be my Valentine date?</h1>
                 <button id="yesButton" class="yes">Yes</button>
                 <button id="noButton" class="no">No</button>
@@ -57,12 +43,6 @@ app.post('/create-link', (req, res) => {
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
                     let noClickCount = 0;
-
-                    const yesButton = document.getElementById('yesButton');
-                    const noButton = document.getElementById('noButton');
-                    const valentineMessage = document.getElementById('valentineMessage');
-                    const gif = document.querySelector('img');
-                    const maxTopMargin = 20; // Maximum top margin for the text and GIF
 
                     document.getElementById('yesButton').addEventListener('click', function() {
                         window.location.href = '../yes.html';
@@ -82,7 +62,7 @@ app.post('/create-link', (req, res) => {
                         } while (
                             (randomX < yesButton.offsetLeft + yesButton.offsetWidth && randomX + this.offsetWidth > yesButton.offsetLeft) ||
                             (randomY < yesButton.offsetTop + yesButton.offsetHeight && randomY + this.offsetHeight > yesButton.offsetTop) ||
-                            (randomY < valentineMessage.offsetTop + valentineMessage.offsetHeight)
+                            (randomY < document.getElementById('valentineMessage').offsetTop + document.getElementById('valentineMessage').offsetHeight)
                         );
 
                         this.style.position = 'absolute';
@@ -90,30 +70,16 @@ app.post('/create-link', (req, res) => {
                         this.style.top = \`\${randomY}px\`;
 
                         const currentScale = parseFloat(window.getComputedStyle(yesButton).transform.split(',')[0].slice(7)) || 1;
-                        const newScale = currentScale + 0.1;
-
-                        if (parseInt(valentineMessage.style.marginTop) <= maxTopMargin) {
-                            noButton.style.display = 'none';
-                        } else {
-                            yesButton.style.transform = \`scale(\${newScale})\`;
-                            const newMarginTop = Math.min(maxTopMargin, -newScale * 20);
-                            valentineMessage.style.marginTop = \`\${newMarginTop}px\`;
-                            gif.style.marginTop = \`\${newMarginTop}px\`;
-                        }
+                        yesButton.style.transform = \`scale(\${currentScale + 0.1})\`;
                     });
                 });
             </script>
-            <footer style="position: absolute; bottom: 0; width: 100%;">
-                <div>Made with <span class="animated-heart">❤️</span> by pythontilk</div>
-                <br>
-                <a href="https://tilk.tech" target="_blank">Look at my other projects here</a>
-            </footer>
         </body>
         </html>
     `;
 
     fs.writeFileSync(path.join(linksDir, filename), askoutContent);
-    res.send(`<a href="${link}" target="_blank">Your custom link</a>`);
+    res.json({ link });
 });
 
 app.get('/yes.html', (req, res) => {
