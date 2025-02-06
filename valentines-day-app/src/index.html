@@ -13,6 +13,10 @@
         <form id="createLinkForm"> 
             <label for="name">Enter your name:</label>
             <input type="text" id="name" name="name" required>
+            <div>
+                <input type="checkbox" id="canSayNo" name="canSayNo">
+                <label for="canSayNo">Can say no</label>
+            </div>
             <button type="submit">Create Link</button>
         </form>
         <div id="linkContainer" style="display: none;"></div>
@@ -26,12 +30,13 @@
         document.getElementById('createLinkForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const name = document.getElementById('name').value;
+            const canSayNo = document.getElementById('canSayNo').checked;
             fetch('/create-link', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `name=${encodeURIComponent(name)}`,
+                body: `name=${encodeURIComponent(name)}&canSayNo=${canSayNo}`,
             })
             .then(response => response.json())
             .then(data => {
