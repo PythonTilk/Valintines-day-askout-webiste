@@ -281,24 +281,66 @@ input[type="text"]:focus, textarea:focus {
 #noButton.gone { opacity: 0; pointer-events: none; }
 .hint { min-height: 1.4em; margin: .9rem 0 0; font-weight: 700; color: var(--wine); }
 
-/* the no page: same card, rainy palette */
+/* the no page: same card, at night, in the rain */
 body.sad {
-    --cream: #f4f1f7;
-    --berry: #7d6f9b;
-    --berry-deep: #5d5178;
-    --wine: #3d3552;
-    --ink: #4a4460;
-    --shadow: 40 34 60;
+    --cream: #262936;
+    --blush: #1c1e29;
+    --berry: #8d93ab;
+    --berry-deep: #14151d;
+    --wine: #c3c7d6;
+    --ink: #9498ab;
+    --shadow: 0 0 0;
     background:
-        radial-gradient(60rem 40rem at 12% -10%, #dfe4f5 0%, transparent 60%),
-        radial-gradient(50rem 36rem at 105% 20%, #c9c2de 0%, transparent 62%),
-        #d8d3e6;
+        radial-gradient(50rem 30rem at 50% -20%, #2f3447 0%, transparent 65%),
+        linear-gradient(#161821, #0e0f15);
     background-attachment: fixed;
 }
-body.sad .card { box-shadow: 0 1px 0 #fff inset, 0 1.5rem 3rem -1rem rgb(var(--shadow) / .35), 0 .4rem 0 #c5bdd9; }
-body.sad .card::before { border-color: #cfc8e0; }
-body.sad .gif { background: #dcd6ea; }
-body.sad .btn.ghost { box-shadow: 0 .3rem 0 #c5bdd9; }
+body.sad main { filter: saturate(.35); }
+body.sad .card {
+    box-shadow: 0 1px 0 #343849 inset, 0 2rem 4rem -1rem rgb(0 0 0 / .8), 0 .4rem 0 #14151d;
+    transform: rotate(2.2deg);
+    animation: sink 2.4s cubic-bezier(.3, 0, .2, 1) both, sway 9s ease-in-out 2.4s infinite;
+}
+@keyframes sink {
+    from { transform: rotate(-1.2deg) translateY(-2rem); opacity: 0; }
+    to { transform: rotate(2.2deg) translateY(0); opacity: 1; }
+}
+@keyframes sway {
+    0%, 100% { transform: rotate(2.2deg) translateY(0); }
+    50% { transform: rotate(1.4deg) translateY(.5rem); }
+}
+body.sad .card::before { border-color: #3a3e50; }
+body.sad .card > .stamp { /* no heartbeat */
+    background: #3a3e50;
+    box-shadow: 0 .35rem 0 #14151d;
+    animation: none;
+    transform: rotate(28deg) translateY(.4rem);
+}
+body.sad .gif { background: #1c1e29; box-shadow: 0 0 0 .3rem #343849, 0 .6rem 1.2rem -.4rem #000; }
+body.sad h1 { color: var(--wine); }
+body.sad h1 em { color: var(--berry); }
+body.sad .lede { min-height: 3.2em; margin-bottom: .75rem; transition: opacity .8s; }
+body.sad .lede.fading { opacity: 0; }
+body.sad .btn.ghost { color: #7d8196; background: transparent; border: 1px solid #3a3e50; box-shadow: none; font-size: .9rem; font-weight: 700; }
+body.sad .btn.ghost:hover { color: var(--wine); background: #2d3040; }
+body.sad footer { color: #5d6174; }
+
+.since { margin: 0 0 1.25rem; font-size: .85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6d7186; }
+.since b { font-variant-numeric: tabular-nums; color: var(--wine); }
+
+.rain { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.rain span {
+    position: absolute;
+    top: -20vh;
+    width: 1px;
+    height: 14vh;
+    background: linear-gradient(transparent, rgb(170 180 210 / .35));
+    animation: pour linear infinite;
+    will-change: transform;
+}
+@keyframes pour {
+    to { transform: translate3d(-6vh, 130vh, 0); }
+}
 
 .confetti { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 2; }
 .confetti span {
@@ -334,5 +376,5 @@ footer a:hover { color: var(--berry); }
 
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
-    .sky, .confetti { display: none; }
+    .sky, .confetti, .rain { display: none; }
 }

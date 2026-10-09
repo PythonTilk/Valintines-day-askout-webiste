@@ -85,3 +85,21 @@ function confetti() {
     document.body.appendChild(layer);
     setTimeout(() => layer.remove(), 8000);
 }
+
+// Steady rain, for the no page.
+function rain() {
+    if (reducedMotion) return;
+    const layer = document.createElement('div');
+    layer.className = 'rain';
+    layer.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < 70; i++) {
+        const drop = document.createElement('span');
+        const seconds = 0.6 + Math.random() * 0.9;
+        drop.style.left = Math.random() * 110 + '%';
+        drop.style.opacity = (0.3 + Math.random() * 0.7).toFixed(2);
+        drop.style.animationDuration = seconds + 's';
+        drop.style.animationDelay = -Math.random() * seconds + 's';
+        layer.appendChild(drop);
+    }
+    document.body.prepend(layer);
+}

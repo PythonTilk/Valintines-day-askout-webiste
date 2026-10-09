@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oh no… 💔</title>
+    <title>Oh. 💔</title>
     <meta name="robots" content="noindex">
-    <meta name="theme-color" content="#d8d3e6">
+    <meta name="theme-color" content="#161821">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💔</text></svg>">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,9 +14,10 @@
         <div class="card">
             <div class="stamp" aria-hidden="true">💔</div>
             <div class="gif emoji" role="img" aria-label="Crying cat">😿</div>
-            <h1>Oh no, you said <em>no…</em></h1>
-            <p class="lede">That's okay. The cat will recover. Eventually.</p>
-            <a id="backLink" class="btn ghost wide" href="index.html" hidden>Changed your mind?</a>
+            <p class="since">Heartbroken for <b id="timer">0:00</b></p>
+            <h1>Oh. You said <em>no.</em></h1>
+            <p id="lede" class="lede" role="status">It's fine. Everything is fine.</p>
+            <a id="backLink" class="btn ghost wide" href="index.html" hidden>…unless you changed your mind?</a>
         </div>
     </main>
     <footer>
@@ -25,7 +26,35 @@
 
     <script src="app.js"></script>
     <script>
-        driftingHearts(['💧', '🌧️', '💔', '🩶']);
+        rain();
+
+        const lines = [
+            "It's fine. Everything is fine.",
+            "The cat hasn't eaten since.",
+            'The roses have already been returned.',
+            'The table for two is now a table for one.',
+            'Somewhere, a very small violin is playing.',
+            'The chocolates will be eaten alone. All of them.',
+            'It has started raining. It was sunny before.',
+            'No, no. Take your time. We will wait here.'
+        ];
+        const lede = document.getElementById('lede');
+        let line = 0;
+        setInterval(() => {
+            lede.classList.add('fading');
+            setTimeout(() => {
+                line = (line + 1) % lines.length;
+                lede.textContent = lines[line];
+                lede.classList.remove('fading');
+            }, 800);
+        }, 4500);
+
+        const timer = document.getElementById('timer');
+        const start = Date.now();
+        setInterval(() => {
+            const seconds = Math.floor((Date.now() - start) / 1000);
+            timer.textContent = Math.floor(seconds / 60) + ':' + String(seconds % 60).padStart(2, '0');
+        }, 1000);
 
         const ask = readAsk();
         if (ask.raw) {
