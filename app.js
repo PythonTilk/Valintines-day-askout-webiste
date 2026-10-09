@@ -1,129 +1,87 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const yesButton = document.getElementById('yesButton');
-    const noButton = document.getElementById('noButton');
-    const createLinkForm = document.getElementById('createLinkForm');
-    const linkContainer = document.getElementById('linkContainer');
-    const valentineMessage = document.getElementById('valentineMessage');
-    let noClickCount = 0;
+// Shared helpers for all pages.
 
-    const beggingPhrases = [
-        "Please reconsider!",
-        "Are you sure?",
-        "Think about it!",
-        "Don't say no!",
-        "Give it a chance!",
-        "Please!",
-        "Just one more time!",
-        "I beg you!",
-        "Pretty please!",
-        "Don't break my heart!",
-        "Please don't say no!",
-        "I'm begging you!",
-        "Please think again!",
-        "Don't do this!",
-        "Please don't!",
-        "Just say yes!",
-        "Please, please!",
-        "I'm on my knees!",
-        "Don't make me cry!",
-        "Please be kind!",
-        "I'm pleading!",
-        "Please be my Valentine!",
-        "Don't say no again!",
-        "Please, I'm asking nicely!",
-        "Just this once!",
-        "Please don't reject me!",
-        "I'm asking you!",
-        "Please, it's Valentine's Day!",
-        "Don't make me sad!",
-        "Please, I'm desperate!",
-        "Just say yes, please!",
-        "Please, it's important!",
-        "Don't say no, please!",
-        "Please, I'm serious!",
-        "Just one yes!",
-        "Please, I'm trying!",
-        "Don't make me beg!",
-        "Please, it's special!",
-        "Just this time!",
-        "Please, I'm hopeful!",
-        "Don't say no, think!",
-        "Please, I'm sincere!",
-        "Just say yes, please!",
-        "Please, it's a request!",
-        "Don't say no, please!",
-        "Please, I'm asking!",
-        "Just one yes, please!",
-        "Please, it's love!",
-        "Don't say no, please!",
-        "Please, I'm here!",
-        "Just say yes, please!",
-        "Please, it's a wish!",
-        "Don't say no, please!",
-        "Please, I'm waiting!",
-        "Just one yes, please!",
-        "Please, it's a dream!",
-        "Don't say no, please!",
-        "Please, I'm hoping!",
-        "Just say yes, please!",
-        "Please, it's a plea!",
-        "Don't say no, please!",
-        "Please, I'm here!",
-        "Just one yes, please!",
-        "Please, it's a hope!",
-        "Don't say no, please!",
-        "Please, I'm asking!",
-        "Just say yes, please!",
-        "Please, it's a wish!",
-        "Don't say no, please!",
-        "Please, I'm waiting!",
-        "Just one yes, please!",
-        "Please, it's a dream!",
-        "Don't say no, please!",
-        "Please, I'm hoping!",
-        "Just say yes, please!",
-        "Please, it's a plea!",
-        "Don't say no, please!",
-        "Please, I'm here!",
-        "Just one yes, please!",
-        "Please, it's a hope!"
-    ];
+// The ask is carried in the link itself as ?d=<base64url JSON>, so the site
+// needs no server. Encoding only keeps the name out of plain sight.
+function encodeAsk(ask) {
+    const bytes = new TextEncoder().encode(JSON.stringify(ask));
+    let binary = '';
+    bytes.forEach((b) => { binary += String.fromCharCode(b); });
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
 
-    createLinkForm.addEventListener('submit', (event) => { 
-        event.preventDefault();
-        const name = document.getElementById('name').value;
-        const link = `askout_${Date.now()}.html?name=${encodeURIComponent(name)}`;
-        linkContainer.textContent = link;
-    });
+function decodeAsk(encoded) {
+    const binary = atob(encoded.replace(/-/g, '+').replace(/_/g, '/'));
+    const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+}
 
-    yesButton.addEventListener('click', () => {
-        window.location.href = 'yes.html';
-    });
-
-    noButton.addEventListener('click', () => {
-        noClickCount++;
-        if (noClickCount >= 100) {
-            window.location.href = 'no.html';
-            return;
+// Reads the ask from the current URL. Also accepts the older ?name=&no=1 links.
+function readAsk() {
+    const params = new URLSearchParams(window.location.search);
+    const ask = { name: '', from: '', message: '', canSayNo: false, raw: params.get('d') || '' };
+    if (ask.raw) {
+        try {
+            const data = decodeAsk(ask.raw);
+            ask.name = String(data.n || '').slice(0, 40);
+            ask.from = String(data.f || '').slice(0, 40);
+            ask.message = String(data.m || '').slice(0, 140);
+            ask.canSayNo = data.x === 1;
+        } catch (error) {
+            ask.raw = '';
         }
+    } else if (params.get('name')) {
+        ask.name = params.get('name').trim().slice(0, 40);
+        ask.canSayNo = params.get('no') === '1';
+        ask.raw = encodeAsk({ n: ask.name, x: ask.canSayNo ? 1 : 0 });
+    }
+    return ask;
+}
 
-        let randomX, randomY;
-        do {
-            randomX = Math.random() * (window.innerWidth - noButton.offsetWidth);
-            randomY = Math.random() * (window.innerHeight - noButton.offsetHeight);
-        } while (
-            (randomX < yesButton.offsetLeft + yesButton.offsetWidth && randomX + noButton.offsetWidth > yesButton.offsetLeft) ||
-            (randomY < yesButton.offsetTop + yesButton.offsetHeight && randomY + noButton.offsetHeight > yesButton.offsetTop) ||
-            (randomY < valentineMessage.offsetTop + valentineMessage.offsetHeight)
-        );
+function pageUrl(page, raw) {
+    const url = new URL(page, window.location.href);
+    url.search = raw ? '?d=' + raw : '';
+    url.hash = '';
+    return url.toString();
+}
 
-        noButton.style.position = 'absolute';
-        noButton.style.left = `${randomX}px`;
-        noButton.style.top = `${randomY}px`;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        const currentScale = parseFloat(window.getComputedStyle(yesButton).transform.split(',')[0].slice(7)) || 1;
-        yesButton.style.transform = `scale(${currentScale + 0.1})`;
+function scatter(container, symbols, count, minSeconds, maxSeconds) {
+    for (let i = 0; i < count; i++) {
+        const piece = document.createElement('span');
+        const seconds = minSeconds + Math.random() * (maxSeconds - minSeconds);
+        piece.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.fontSize = 0.9 + Math.random() * 1.6 + 'rem';
+        piece.style.animationDuration = seconds + 's';
+        piece.style.animationDelay = -Math.random() * seconds + 's';
+        piece.style.setProperty('--sway', (Math.random() * 8 - 4).toFixed(1) + 'rem');
+        piece.style.setProperty('--spin', Math.round(Math.random() * 720 - 360) + 'deg');
+        piece.style.setProperty('--o', (0.25 + Math.random() * 0.4).toFixed(2));
+        container.appendChild(piece);
+    }
+}
 
-        noButton.textContent = beggingPhrases[noClickCount % beggingPhrases.length];
+// Slow hearts drifting up behind the card.
+function driftingHearts(symbols) {
+    if (reducedMotion) return;
+    const sky = document.createElement('div');
+    sky.className = 'sky';
+    sky.setAttribute('aria-hidden', 'true');
+    scatter(sky, symbols || ['💗', '💕', '🩷', '💖', '🌸'], 16, 11, 22);
+    document.body.prepend(sky);
+}
+
+// One burst of hearts raining down, for the yes page.
+function confetti() {
+    if (reducedMotion) return;
+    const layer = document.createElement('div');
+    layer.className = 'confetti';
+    layer.setAttribute('aria-hidden', 'true');
+    scatter(layer, ['💖', '💘', '💝', '🎉', '✨', '🩷', '🌹'], 70, 2.5, 5.5);
+    layer.querySelectorAll('span').forEach((piece) => {
+        piece.style.animationDelay = Math.random() * 1.8 + 's';
     });
-});
+    document.body.appendChild(layer);
+    setTimeout(() => layer.remove(), 8000);
+}

@@ -3,69 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine's Day Proposal</title>
+    <title>Ask your Valentine</title>
+    <meta name="description" content="Make a cute link to ask someone to be your Valentine.">
+    <meta name="theme-color" content="#ffd6de">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💌</text></svg>">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <img src="https://media.tenor.com/ns27oDL6PPIAAAAM/cats-cat-with-flower.gif" alt="Cat with flower">
-        <h1>Will you be my Valentine?</h1>
-        <form id="createLinkForm"> 
-            <label for="name">Enter your name:</label>
-            <input type="text" id="name" name="name" required>
-            <div>
-                <input type="checkbox" id="canSayNo" name="canSayNo">
-                <label for="canSayNo">Can say no</label>
-            </div>
-            <button type="submit">Create Link</button>
-        </form>
-        <div id="linkContainer" style="display: none;"></div>
-        <div class="button-container">
-            <button id="customLinkButton" class="copy-link" style="display: none;">Your Custom Link</button>
-            <button id="copyLinkButton" class="copy-link" style="display: none;">📋</button>
-        </div>
-    </div>
-    <div id="popup" class="popup">Link copied to clipboard!</div>
-    <script>
-        document.getElementById('createLinkForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const name = document.getElementById('name').value;
-            const canSayNo = document.getElementById('canSayNo').checked;
-            const link = new URL('ask.html', window.location.href);
-            link.searchParams.set('name', name);
-            if (canSayNo) {
-                link.searchParams.set('no', '1');
-            }
-            const url = link.toString();
+    <main>
+        <div class="card">
+            <div class="stamp" aria-hidden="true">💌</div>
+            <div class="gif"><img src="https://media.tenor.com/ns27oDL6PPIAAAAM/cats-cat-with-flower.gif" alt="Cat holding a flower" width="152" height="152"></div>
+            <h1>Ask your <em>Valentine</em></h1>
+            <p class="lede">Fill this in, get a link, send it. They get the question.</p>
 
-            const anchor = document.createElement('a');
-            anchor.href = url;
-            anchor.target = '_blank';
-            anchor.textContent = 'Your custom link';
-            document.getElementById('linkContainer').replaceChildren(anchor);
-            document.getElementById('linkContainer').style.display = 'block';
-            document.getElementById('customLinkButton').style.display = 'block';
-            document.getElementById('copyLinkButton').style.display = 'block';
-            document.getElementById('customLinkButton').onclick = function() {
-                window.location.href = url;
-            };
+            <form id="createLinkForm">
+                <div class="field">
+                    <label for="name">Their name</label>
+                    <input type="text" id="name" name="name" maxlength="40" placeholder="Who are you asking?" autocomplete="off" required>
+                </div>
+                <div class="field">
+                    <label for="from">Your name <small>(optional)</small></label>
+                    <input type="text" id="from" name="from" maxlength="40" placeholder="So they know it's you" autocomplete="off">
+                </div>
+                <div class="field">
+                    <label for="message">A little message <small>(optional)</small></label>
+                    <textarea id="message" name="message" maxlength="140" rows="2" placeholder="Something sweet…"></textarea>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="canSayNo" name="canSayNo">
+                    <span class="track" aria-hidden="true"></span>
+                    <span>They are allowed to say no</span>
+                </label>
+                <button type="submit" class="btn wide">Make my link 💘</button>
+            </form>
+
+            <div id="result" class="result" hidden>
+                <div id="linkBox" class="linkbox" tabindex="0" aria-label="Your link"></div>
+                <div class="row">
+                    <button type="button" id="copyButton" class="btn">Copy link</button>
+                    <button type="button" id="shareButton" class="btn ghost" hidden>Share</button>
+                    <a id="previewLink" class="btn ghost" target="_blank" rel="noopener">Preview</a>
+                </div>
+            </div>
+            <p id="status" class="sr-only" role="status"></p>
+        </div>
+    </main>
+    <footer>
+        Made with ❤️ by pythontilk · <a href="https://tilk.dev" target="_blank" rel="noopener">more of my projects</a>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        driftingHearts();
+
+        const form = document.getElementById('createLinkForm');
+        const result = document.getElementById('result');
+        const linkBox = document.getElementById('linkBox');
+        const copyButton = document.getElementById('copyButton');
+        const shareButton = document.getElementById('shareButton');
+        const previewLink = document.getElementById('previewLink');
+        const status = document.getElementById('status');
+        const fields = form.elements;
+        let link = '';
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const ask = { n: fields.name.value.trim(), x: fields.canSayNo.checked ? 1 : 0 };
+            if (fields.from.value.trim()) ask.f = fields.from.value.trim();
+            if (fields.message.value.trim()) ask.m = fields.message.value.trim();
+
+            link = pageUrl('ask.html', encodeAsk(ask));
+            linkBox.textContent = link;
+            previewLink.href = link;
+            shareButton.hidden = !navigator.share;
+            result.hidden = false;
+            resetCopyButton();
+            result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
 
-        document.getElementById('copyLinkButton').addEventListener('click', function() {
-            const link = document.querySelector('#linkContainer a').href;
-            navigator.clipboard.writeText(link).then(() => {
-                const popup = document.getElementById('popup');
-                popup.classList.add('show');
-                setTimeout(() => {
-                    popup.classList.remove('show');
-                }, 3000);
-            });
+        form.addEventListener('input', () => { result.hidden = true; });
+
+        function resetCopyButton() {
+            copyButton.textContent = 'Copy link';
+            copyButton.classList.remove('done');
+        }
+
+        copyButton.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(link);
+            } catch (error) {
+                // Clipboard API unavailable: select the link so it can be copied by hand.
+                window.getSelection().selectAllChildren(linkBox);
+                status.textContent = 'Link selected, copy it manually.';
+                return;
+            }
+            copyButton.textContent = 'Copied ✓';
+            copyButton.classList.add('done');
+            status.textContent = 'Link copied to clipboard.';
+            setTimeout(resetCopyButton, 2500);
+        });
+
+        shareButton.addEventListener('click', () => {
+            navigator.share({ title: 'A question for you 💌', url: link }).catch(() => {});
         });
     </script>
-    <footer style="position: absolute; bottom: 0; width: 100%; text-align: center;">
-        <div>Made with <span class="animated-heart">❤️</span> by pythontilk</div>
-        <br>
-        <a href="https://tilk.dev" target="_blank">Look at my other projects here</a>
-    </footer>
 </body>
 </html>
